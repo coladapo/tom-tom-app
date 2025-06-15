@@ -35,9 +35,9 @@ Tom Tom is a voice-first, emotionally aware productivity app designed for creati
 git clone https://github.com/coladapo/tom-tom-app.git
 cd tom-tom-app
 
-# Run the iOS fix script (if having build issues)
-chmod +x fix_ios_build.sh
-./fix_ios_build.sh
+# For iOS build issues, run the nuclear fix:
+chmod +x nuclear_fix_ios.sh
+./nuclear_fix_ios.sh
 
 # Or regular setup:
 npm install
@@ -59,17 +59,21 @@ npm run android
 
 ## 🚨 iOS Build Troubleshooting
 
-**Having iOS build issues?** Follow this order:
+### 🔴 CRITICAL: Multiple Library Errors?
+**If you see 50+ "library not found" errors**, use:
+- **[iOS EMERGENCY RECOVERY](./iOS_EMERGENCY_RECOVERY.md)** - Nuclear option for completely broken builds
+- **Run**: `./nuclear_fix_ios.sh`
 
-1. **[iOS Complete Fix Guide](./iOS_COMPLETE_FIX.md)** - Start here! Comprehensive solutions for all build errors
-2. **Run the fix script**: `./fix_ios_build.sh`
-3. **Other guides if needed**:
-   - [iOS Build Fix Instructions](./iOS_BUILD_FIX.md) - Quick reference
-   - [iOS Build Troubleshooting Guide](./iOS_BUILD_TROUBLESHOOTING.md) - Detailed explanations
+### Regular Build Issues
+1. **[iOS Complete Fix Guide](./iOS_COMPLETE_FIX.md)** - Comprehensive solutions
+2. **[iOS Build Fix Instructions](./iOS_BUILD_FIX.md)** - Quick reference
+3. **[iOS LaunchScreen Fix](./iOS_LAUNCHSCREEN_FIX.md)** - LaunchScreen.storyboard issues
 
 **Most Common Issue:**
 - Error: "React/RCTAppSetupUtils.h not found" 
-- Solution: Run `./fix_ios_build.sh` or follow the manual steps in iOS_COMPLETE_FIX.md
+- Solution: Run `./fix_ios_build.sh` or `./nuclear_fix_ios.sh`
+
+**Remember:** Always open `ios/TomTom.xcworkspace` NOT `ios/TomTom.xcodeproj`!
 
 ## 🎨 Design System
 
@@ -116,7 +120,10 @@ src/
 ## 🔧 Useful Scripts
 
 ```bash
-# Fix iOS build issues
+# Nuclear fix for completely broken iOS builds
+./nuclear_fix_ios.sh
+
+# Standard iOS build fix
 ./fix_ios_build.sh
 
 # Clean everything and reinstall
