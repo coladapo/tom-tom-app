@@ -35,11 +35,11 @@ Tom Tom is a voice-first, emotionally aware productivity app designed for creati
 git clone https://github.com/coladapo/tom-tom-app.git
 cd tom-tom-app
 
-# Run the setup script (macOS/Linux)
-chmod +x setup.sh
-./setup.sh
+# Run the iOS fix script (if having build issues)
+chmod +x fix_ios_build.sh
+./fix_ios_build.sh
 
-# Or manual setup:
+# Or regular setup:
 npm install
 cd ios && pod install && cd ..
 ```
@@ -57,16 +57,19 @@ npm run ios
 npm run android
 ```
 
-## 🚨 Troubleshooting
+## 🚨 iOS Build Troubleshooting
 
-**Having iOS build issues?** Check these guides:
-- [iOS Build Fix Instructions](./iOS_BUILD_FIX.md) - Quick fixes for common issues
-- [iOS Build Troubleshooting Guide](./iOS_BUILD_TROUBLESHOOTING.md) - Comprehensive solutions for Xcode errors
+**Having iOS build issues?** Follow this order:
 
-**Common Issues:**
-- Always open `ios/TomTom.xcworkspace` in Xcode, not the `.xcodeproj` file
-- If you see "React/RCTAppSetupUtils.h not found", run `npm run clean-ios`
-- For voice features, test on a real device (simulator won't capture audio)
+1. **[iOS Complete Fix Guide](./iOS_COMPLETE_FIX.md)** - Start here! Comprehensive solutions for all build errors
+2. **Run the fix script**: `./fix_ios_build.sh`
+3. **Other guides if needed**:
+   - [iOS Build Fix Instructions](./iOS_BUILD_FIX.md) - Quick reference
+   - [iOS Build Troubleshooting Guide](./iOS_BUILD_TROUBLESHOOTING.md) - Detailed explanations
+
+**Most Common Issue:**
+- Error: "React/RCTAppSetupUtils.h not found" 
+- Solution: Run `./fix_ios_build.sh` or follow the manual steps in iOS_COMPLETE_FIX.md
 
 ## 🎨 Design System
 
@@ -113,6 +116,9 @@ src/
 ## 🔧 Useful Scripts
 
 ```bash
+# Fix iOS build issues
+./fix_ios_build.sh
+
 # Clean everything and reinstall
 npm run clean
 
