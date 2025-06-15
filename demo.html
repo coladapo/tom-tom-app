@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TomTom Voice App - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #F9F7F6;
+            color: #333333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666666;
+            font-size: 1.1rem;
+        }
+        
+        .voice-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .record-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #A5B4AB, #8A9A91);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .record-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .record-button.recording {
+            background: linear-gradient(135deg, #D1A097, #C18B7E);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .status {
+            font-size: 1rem;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+        
+        .transcription {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            min-height: 60px;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .tasks-section {
+            flex: 1;
+        }
+        
+        .tasks-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #A5B4AB;
+        }
+        
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333333;
+        }
+        
+        .task-sentiment {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .sentiment-energy { background: #FFE5B4; color: #CC8800; }
+        .sentiment-calm { background: #E5F3FF; color: #0066CC; }
+        .sentiment-reflection { background: #F0E5FF; color: #6600CC; }
+        .sentiment-neutral { background: #F5F5F5; color: #666666; }
+        
+        .demo-notice {
+            background: #A5B4AB;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .ai-processing {
+            background: #E5F3FF;
+            border: 1px dashed #0066CC;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            color: #0066CC;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0066CC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 TomTom</h1>
+            <p>Voice-First Productivity</p>
+        </div>
+        
+        <div class="demo-notice">
+            📱 This is a web demo of the TomTom iOS app interface
+        </div>
+        
+        <div class="voice-section">
+            <button id="recordButton" class="record-button">🎤</button>
+            <div id="status" class="status">Tap to record your thoughts</div>
+            <div id="transcription" class="transcription" style="display: none;">
+                Your transcription will appear here...
+            </div>
+            <div id="aiProcessing" class="ai-processing" style="display: none;">
+                <div class="loading"></div>
+                AI is processing your voice into tasks...
+            </div>
+        </div>
+        
+        <div class="tasks-section">
+            <div class="tasks-header">📋 Today's Tasks</div>
+            <div id="tasksContainer">
+                <div class="task-card">
+                    <div class="task-title">Welcome to TomTom!</div>
+                    <span class="task-sentiment sentiment-energy">energy</span>
+                    <p style="margin-top: 10px; color: #666;">Record your first voice note to see AI-powered task extraction in action.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRecording = false;
+        let recognition = null;
+        let finalTranscript = '';
+        
+        // Check if browser supports speech recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+            
+            recognition.onstart = function() {
+                document.getElementById('status').textContent = '🎙️ Listening... speak now';
+                document.getElementById('transcription').style.display = 'block';
+                document.getElementById('transcription').textContent = 'Listening...';
+            };
+            
+            recognition.onresult = function(event) {
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                document.getElementById('transcription').textContent = finalTranscript + interimTranscript;
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                document.getElementById('status').textContent = 'Error: ' + event.error;
+                document.getElementById('transcription').textContent = 'Sorry, there was an error. Please try again.';
+                isRecording = false;
+                document.getElementById('recordButton').classList.remove('recording');
+            };
+            
+            recognition.onend = function() {
+                if (isRecording) {
+                    // If we're still supposed to be recording, restart
+                    recognition.start();
+                } else {
+                    document.getElementById('recordButton').classList.remove('recording');
+                    document.getElementById('status').textContent = 'Tap to record your thoughts';
+                    
+                    // Only process if we have a final transcript
+                    if (finalTranscript.trim()) {
+                        simulateAIProcessing(finalTranscript);
+                    }
+                }
+            };
+        } else {
+            document.getElementById('status').textContent = 'Speech recognition not supported in this browser';
+            document.getElementById('recordButton').disabled = true;
+        }
+        
+        document.getElementById('recordButton').addEventListener('click', function() {
+            if (!recognition) {
+                alert('Speech recognition not supported in this browser. Try Chrome or Safari.');
+                return;
+            }
+            
+            if (isRecording) {
+                isRecording = false;
+                recognition.stop();
+            } else {
+                finalTranscript = '';
+                isRecording = true;
+                this.classList.add('recording');
+                recognition.start();
+            }
+        });
+        
+        function simulateAIProcessing(transcript) {
+            document.getElementById('aiProcessing').style.display = 'block';
+            
+            // Simulate AI processing with a more realistic delay
+            const processingTime = Math.random() * 1000 + 1500; // Random delay between 1.5-2.5 seconds
+            
+            setTimeout(() => {
+                document.getElementById('aiProcessing').style.display = 'none';
+                createTaskFromTranscript(transcript);
+            }, processingTime);
+        }
+        
+        function createTaskFromTranscript(transcript) {
+            const tasksContainer = document.getElementById('tasksContainer');
+            
+            // Remove the welcome message if it exists
+            const welcomeMessage = tasksContainer.querySelector('.task-card:first-child');
+            if (welcomeMessage && welcomeMessage.querySelector('.task-title').textContent === 'Welcome to TomTom!') {
+                welcomeMessage.remove();
+            }
+            
+            // Simple AI simulation - extract action words
+            let sentiment = 'neutral';
+            let taskTitle = transcript;
+            
+            if (transcript.toLowerCase().includes('excited') || transcript.toLowerCase().includes('energized')) {
+                sentiment = 'energy';
+            } else if (transcript.toLowerCase().includes('calm') || transcript.toLowerCase().includes('peaceful')) {
+                sentiment = 'calm';
+            } else if (transcript.toLowerCase().includes('think') || transcript.toLowerCase().includes('reflect')) {
+                sentiment = 'reflection';
+            }
+            
+            // Extract potential task
+            if (transcript.toLowerCase().includes('need to') || transcript.toLowerCase().includes('should') || transcript.toLowerCase().includes('have to')) {
+                taskTitle = transcript.replace(/.*?(need to|should|have to)/i, '').trim();
+                if (taskTitle.length === 0) taskTitle = transcript;
+            }
+            
+            const taskCard = document.createElement('div');
+            taskCard.className = 'task-card';
+            taskCard.innerHTML = `
+                <div class="task-title">${taskTitle.charAt(0).toUpperCase() + taskTitle.slice(1)}</div>
+                <span class="task-sentiment sentiment-${sentiment}">${sentiment}</span>
+                <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">From voice: "${transcript}"</p>
+            `;
+            
+            tasksContainer.insertBefore(taskCard, tasksContainer.firstChild);
+            
+            // Add a little animation
+            taskCard.style.opacity = '0';
+            taskCard.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                taskCard.style.transition = 'all 0.3s ease';
+                taskCard.style.opacity = '1';
+                taskCard.style.transform = 'translateY(0)';
+            }, 100);
+        }
+        
+        // Simulate OpenAI API demo
+        function showOpenAIDemo() {
+            const demoTranscript = "I need to call my dentist tomorrow and also prepare for the presentation";
+            document.getElementById('transcription').textContent = demoTranscript;
+            document.getElementById('transcription').style.display = 'block';
+            simulateAIProcessing(demoTranscript);
+        }
+        
+        // Auto-demo after 5 seconds if no interaction
+        setTimeout(() => {
+            if (!isRecording && document.getElementById('tasksContainer').children.length === 1) {
+                showOpenAIDemo();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
