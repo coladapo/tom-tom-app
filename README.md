@@ -14,7 +14,7 @@ Tom Tom is a voice-first, emotionally aware productivity app designed for creati
 ## 🛠 Tech Stack
 - **Framework**: React Native with TypeScript
 - **State Management**: Redux Toolkit
-- **Voice Processing**: react-native-voice
+- **Voice Processing**: @react-native-voice/voice
 - **AI Integration**: OpenAI API (or alternative LLM)
 - **Local Storage**: AsyncStorage + SQLite
 - **UI Components**: Custom design system based on PRD specifications
@@ -28,21 +28,25 @@ Tom Tom is a voice-first, emotionally aware productivity app designed for creati
 - iOS: Xcode 14+
 - Android: Android Studio
 
-### Installation
+### Quick Setup
 
 ```bash
 # Clone the repository
 git clone https://github.com/coladapo/tom-tom-app.git
 cd tom-tom-app
 
-# Install dependencies
+# Run the setup script (macOS/Linux)
+chmod +x setup.sh
+./setup.sh
+
+# Or manual setup:
 npm install
-# or
-yarn install
+cd ios && pod install && cd ..
+```
 
-# iOS specific
-cd ios && pod install
+### Running the App
 
+```bash
 # Start Metro bundler
 npm start
 
@@ -52,6 +56,17 @@ npm run ios
 # Run on Android
 npm run android
 ```
+
+## 🚨 Troubleshooting
+
+**Having iOS build issues?** Check these guides:
+- [iOS Build Fix Instructions](./iOS_BUILD_FIX.md) - Quick fixes for common issues
+- [iOS Build Troubleshooting Guide](./iOS_BUILD_TROUBLESHOOTING.md) - Comprehensive solutions for Xcode errors
+
+**Common Issues:**
+- Always open `ios/TomTom.xcworkspace` in Xcode, not the `.xcodeproj` file
+- If you see "React/RCTAppSetupUtils.h not found", run `npm run clean-ios`
+- For voice features, test on a real device (simulator won't capture audio)
 
 ## 🎨 Design System
 
@@ -80,12 +95,13 @@ src/
 ## 🚀 Development Roadmap
 
 ### MVP Features
-- [ ] Voice capture with visual feedback
-- [ ] Basic LLM integration for task parsing
-- [ ] Simple task view with cards
-- [ ] Morning/Evening ritual flows
-- [ ] Basic sentiment indicators
-- [ ] Local data storage
+- [x] Voice capture UI with visual feedback
+- [x] Task card components with sentiment indicators
+- [x] Morning/Evening ritual screens
+- [x] Redux store setup
+- [ ] Actual voice recording integration
+- [ ] LLM API integration
+- [ ] Local data persistence
 
 ### Post-MVP
 - [ ] Advanced continuity engine
@@ -93,6 +109,22 @@ src/
 - [ ] Export functionality
 - [ ] Personalized AI coaching
 - [ ] Cross-device sync
+
+## 🔧 Useful Scripts
+
+```bash
+# Clean everything and reinstall
+npm run clean
+
+# Clean iOS build artifacts
+npm run clean-ios
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+```
 
 ## 🤝 Contributing
 Please read our contributing guidelines before submitting PRs.
